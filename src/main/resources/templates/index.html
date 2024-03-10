@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h1, h2 {
+    color: #3366cc;
+}
+
+#accountFormContainer, #accountListContainer {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 8px;
+    background-color: #3366cc;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #25407f;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 5px;
+}
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Banking App</title>
+    <!-- Your other head elements (stylesheets, scripts, etc.) go here -->
+</head>
+<body>
+<h1>Welcome to the Index Page</h1>
+<button onclick="createAccount()">Create Account</button>
+<button onclick="searchAccountById()">Search Account by ID</button>
+<button onclick="showAllAccounts()">Show All Accounts</button>
+<button onclick="deposit()">Deposit</button>
+<button onclick="withdraw()">Withdraw</button>
+<button onclick="deleteAccount()">Delete Account</button>
+<div id="resultContainer"></div>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+    // Event listener for page load
+    // You can add any initialization code here
+});
+
+function createAccount() {
+    const username = prompt("Enter username:");
+    const amount = prompt("Enter initial amount:");
+
+    fetch('/banking-service/create-Account', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            username: username,
+            amount: parseFloat(amount) // Assuming amount is a number
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayResult(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function searchAccountById() {
+    const accountId = prompt("Enter account ID:");
+
+    fetch(`/banking-service/account/${accountId}`)
+    .then(response => response.json())
+    .then(data => {
+        displayResult(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function showAllAccounts() {
+    fetch('/banking-service')
+    .then(response => response.json())
+    .then(data => {
+        displayResult(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function deposit() {
+    const accountId = prompt("Enter account ID:");
+    const amount = prompt("Enter deposit amount:");
+
+    fetch(`/banking-service/deposit/${accountId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            amount: parseFloat(amount) // Assuming amount is a number
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayResult(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function withdraw() {
+    const accountId = prompt("Enter account ID:");
+    const amount = prompt("Enter withdrawal amount:");
+
+    fetch(`/banking-service/withdraw/${accountId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            amount: parseFloat(amount) // Assuming amount is a number
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayResult(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function deleteAccount() {
+    const accountId = prompt("Enter account ID:");
+
+    fetch(`/banking-service/delete/${accountId}`, {
+        method: 'DELETE',
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayResult(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function displayResult(data) {
+    const resultContainer = document.getElementById('resultContainer');
+    resultContainer.innerHTML = JSON.stringify(data, null, 2); // Pretty-print JSON
+}
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
+
+
